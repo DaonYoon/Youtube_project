@@ -2,7 +2,7 @@ extends base
 
 block content
     h4 Update Video
-    form(method="POST")
+    form(method="POST", enctype ="multipart/form-data")
         input(name="title", placeholder="Video Title", required, value=video.title)
         input(name="description", placeholder="description", required, value=video.description)
         input(name="hashtags", placeholder="hashtags", required, value=video.hashtags.join())
