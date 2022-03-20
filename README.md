@@ -1,36 +1,54 @@
-2022-03-16
+2022-03-20 
+비디오 녹화기능
+프론트엔드단에서 async 사용하기위해 npm i regeneratpor-runtime 설치
 
-유저를 만들고 비밀번호를 보안을위해 hash 함 npm i bcrypt
-ex) abc123 => qwdj12o3iu1290jkdfo02349kr03kf
+
+    let stream; // 함수 바깥에서에서도 사용하기위해 전역변수
+    let recorder;
+    let videoFile;
 
 
-세션
+    stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+    });
+        video.srcObject = stream;  video라는 파일의 오브젝트를 stream으로하겠다는뜻
+        video.play(); 비디오 시작
+}
 
-백엔드와 브라우저간에 활동을 뜻함
+   ! 미디어디바이스는 카메라,마이크 같은 장비에 접근가능하게해줌 !
 
-Node에서 Fetch를 쓸려면 node-fetch 깔아야함
+   카메라가 실시간으로 stream을 받아서 video로 넣어주기때매 실시간 스트리밍가능
 
------------------------
-2022-03-17
-multer를 이용하여 비디오 업로드
+    const handleStart = () => {
+    startBtn.innerText = "Stop Recording";
+    startBtn.removeEventListener("click", handleStart); //버튼 하나로 두가지 기능하기위해
+    startBtn.addEventListener("click", handleStop);
+    recorder = new MediaRecorder(stream. {mimeType: "video/webm"}); 
+    recorder.ondataavailable = (event) => { event.data(녹화파일)
+        console.log(event)
+        videoFile = URL.createObjectURL(event.data); //브라우저 메모리에있는 파일에 접근
+        video.srcObject = null; //비디오 미리보기 제거
+        video.src = videoFile; 
+        video.loop = true; //반복재생
+        video.play(); 
+    }
+    recorder.start();
+    }
+    
 
-2022-03-18
-Webpack 
-최근코드를 브라우저가 이해하기위해 코드를 이해시켜주는 툴이라 생각하면됨
-메인파일.js -> (웹펙) -> 아웃풋 파일 
 
-output 디렉토리명은 __dirname(현재폴더)
+const handleStop = () => {
+    startBtn.innerText = "Download Recording"
+    startBtn.removeEventListener("click", handleStop);
+    startBtn.addEventListener("click", handleDownload);
+    recorder.stop() /녹화종료하고 다운로드 함수로
+}
 
-app.use("/static", express.static("assets"));  /static 주소로 갈경우 assets 폴더를
-
------------------
-Sass
-Sass-loader = SCSS를 일반적인 CSS 로 변경 / 브라우저는 SCSS 이해불가
-style-loader는 css code를 브라우저에 적용하는 역할을함 (몇가지 옵션을가지고있음)
-MiniCssExtractPlugin -> CSS 로 컴파일된 코드를 css/styles.css 에 입력
-
------------------------------
-
-2022-03-19
-이벤트리스너 활용해 유튜브 기능 구현
-PUG템플릿에서 데이터를 받아오기위해 data attribute 사용
+const handleDownload = () => {
+    const a = document.createElement("a");
+    a.href = videoFile; // 링크지정
+    a.download = "My Recording.webm"
+    document.body.appendChild(a); // body에 링크가 존재해야 클릭가능하기때문에 넣어줌
+    a.click(); // 사용자말고 우리가 대신클릭
+}
