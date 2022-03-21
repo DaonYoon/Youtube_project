@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import flash from "express-flash";
 import session from "express-session"
 import rootRouter from "./routers/rootRouter";
 import videoRouter from "./routers/videoRouter";
@@ -23,7 +24,7 @@ app.use(session({
     saveUninitialized:false,
     store: MongoStore.create({mongoUrl: process.env.DB_URL}),
 }))
-
+app.use(flash());
 app.use(localsMiddleware);
 app.use("/uploads", express.static("uploads")) //  Uploads 폴더 노출
 app.use("/static", express.static("assets"));
