@@ -8,7 +8,7 @@ import app from "./server"
 
 
 
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 const handleListening = () => 
 console.log(`Server Listenning on port http://localhost:${PORT}`);
