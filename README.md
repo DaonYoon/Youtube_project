@@ -1,36 +1,27 @@
-2022-3-21
+2022-03-22
 
-알림기능
+---------
+프론트단에서 폼의 데이터를 받아 백엔드로 전달해줄때
 
-node i express-flash 이용
+app.use(express.text()); 를써서 text도 이해가능하게 해준다
+하지만 여러개의 값을 보내줄떈 JSON을 사용해야 하기떄문에
+app.use(express.json()); 를 사용함
 
-서버.js에 app.use(flash()); 사용선언
-그리고 사용할곳에 req.flash("종류", "메시지내용")
-
-
-
-export const protectorMiddleware = (req, res, next) => {
-    if(req.session.loggedIn) {
-        next();               
-    } else {
-        req.flash("error", "Login First")           <--로그인이 필요한 주소에 필요한 메세지 전송
-
-        return res.redirect("/login");
-    };
-}
+ body: JSON.stringify({ text: "i like it" , rating: "5"}), 
+ -> 스트링으로 바꿔줘서 백엔드로 전달
 
 
-컨트롤러에서 사용할경우 똑같이 사용할 함수에다가 넣어줌
+  body: JSON.parse({ text: "i like it" , rating: "5" <- 스트링값 >}),
+  text: "i like it" , rating: "5"
 
-그다음 base.pug에서 사용
 
-mixin message(kind, text)
-    div.message(class=kind)
-        span=text
 
-      if messages.error
-            +message("error", messages.error)              
-        if messages.info
-            +message("info", messages.info)
-        if messages.success
-            +message("success", messages.success)
+  etch(`/api/videos/${videoId}/comment`,{
+        method: "POST",
+        headers: {                                                       헤더는 req 기본정보
+            "Content-Type": "application/json",                  <<- 백엔드에선 JSon 으로 파일을 받는걸 모르기떄문에 헤더에다가 제이슨으로 보낸다고 정보전달
+        },
+        body: JSON.stringify({ text: "i like it" , rating: "5"}),
+    })
+
+---------------------------------------------------------------------------------------------------------------------------
